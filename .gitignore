@@ -1,0 +1,11 @@
+vendor
+bin
+tmp
+
+.vscode
+report.xml
+debug
+.idea/
+
+.env
+dvla-vehicle-exporter.yaml
