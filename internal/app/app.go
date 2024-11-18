@@ -21,8 +21,8 @@ type App struct {
 
 func New(conf *config.Config) (*App, error) {
 	client := dvla.NewClient(dvla.ClientOptions{
-		Endpoint: conf.Endpoint,
-		ApiKey:   conf.ApiKey,
+		VesEndpoint: conf.VesEndpoint,
+		VesApiKey:   conf.VesApiKey,
 	})
 
 	app := &App{

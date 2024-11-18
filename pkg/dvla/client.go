@@ -13,13 +13,13 @@ import (
 )
 
 type ClientOptions struct {
-	Endpoint string
-	ApiKey   string
+	VesEndpoint string
+	VesApiKey   string
 }
 
 func (c *ClientOptions) setDefaults() {
-	if c.Endpoint == "" {
-		c.Endpoint = "https://driver-vehicle-licensing.api.gov.uk"
+	if c.VesEndpoint == "" {
+		c.VesEndpoint = "https://driver-vehicle-licensing.api.gov.uk"
 	}
 }
 
@@ -103,7 +103,7 @@ func (c *Client) GetVehicle(ctx context.Context, reg string) (*Vehicle, error) {
 	}{
 		Reg: reg,
 	}
-	resp, err := c.request(ctx, http.MethodPost, "/vehicle-enquiry/v1/vehicles", body)
+	resp, err := c.vesRequest(ctx, http.MethodPost, "/vehicle-enquiry/v1/vehicles", body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get vehicle details: %w", err)
 	}
@@ -124,8 +124,8 @@ func (c *Client) GetVehicle(ctx context.Context, reg string) (*Vehicle, error) {
 	return out, nil
 }
 
-func (c *Client) request(ctx context.Context, method string, path string, body any) (*http.Response, error) {
-	url, err := url.Parse(fmt.Sprintf("%s%s", c.opts.Endpoint, path))
+func (c *Client) vesRequest(ctx context.Context, method string, path string, body any) (*http.Response, error) {
+	url, err := url.Parse(fmt.Sprintf("%s%s", c.opts.VesEndpoint, path))
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse url: %w", err)
 	}
@@ -143,7 +143,7 @@ func (c *Client) request(ctx context.Context, method string, path string, body a
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
-	req.Header.Set("x-api-key", c.opts.ApiKey)
+	req.Header.Set("x-api-key", c.opts.VesApiKey)
 	req = req.WithContext(ctx)
 
 	return http.DefaultClient.Do(req)
