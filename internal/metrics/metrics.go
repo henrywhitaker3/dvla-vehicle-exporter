@@ -24,6 +24,10 @@ var (
 		Name: "dvla_vehicle_details_tax_expiry_seconds",
 		Help: "The number of seconds until the tax expires",
 	}, []string{"reg"})
+	MotExpirySeconds = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Name: "dvla_vehicle_details_mot_expiry_seconds",
+		Help: "The number of seconds until the tax expires",
+	}, []string{"reg"})
 	CO2Emissions = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "dvla_vehicle_details_co2_emissions",
 	}, []string{"reg"})
@@ -55,6 +59,7 @@ func New(port int) *Metrics {
 		prometheus.MustRegister(YearOfManufacture)
 		prometheus.MustRegister(TaxStatus)
 		prometheus.MustRegister(MotStatus)
+		prometheus.MustRegister(MotExpirySeconds)
 	})
 
 	e := echo.New()

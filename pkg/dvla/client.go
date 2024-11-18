@@ -85,6 +85,7 @@ type Vehicle struct {
 	MarkedForExport          bool      `json:"markedForExport"`
 	MonthOfFirstRegistration DateMonth `json:"monthOfFirstRegistration"`
 	MotStatus                string    `json:"motStatus"`
+	MotExpiryDate            Date      `json:"motExpiryDate"`
 	RegistrationNumber       string    `json:"registrationNumber"`
 	RevenueWeight            int       `json:"revenueWeight"`
 	TaxDueDate               Date      `json:"taxDueDate"`

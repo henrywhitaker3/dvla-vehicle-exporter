@@ -64,6 +64,9 @@ func (c *Collector) collectVehicleDetails(ctx context.Context) {
 		taxed = 1
 	}
 	metrics.TaxStatus.With(c.vehicleLabels(vehicle)).Set(float64(taxed))
+
+	motExpiry := time.Until(time.Time(vehicle.MotExpiryDate))
+	metrics.MotExpirySeconds.With(c.vehicleLabels(vehicle)).Set(motExpiry.Seconds())
 	moted := 0
 	if vehicle.MotStatus == "Valid" {
 		moted = 1
