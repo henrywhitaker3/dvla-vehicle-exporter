@@ -30,9 +30,9 @@ func (l LogLevel) Level() zap.AtomicLevel {
 }
 
 type Config struct {
-	LogLevel LogLevel `yaml:"logLevel" env:"LOG_LEVEL,default=info"`
-	ApiKey   string   `yaml:"apiKey" env:"API_KEY"`
-	Endpoint string   `yaml:"endpoint" env:"API_ENDPOINT,default=https://driver-vehicle-licensing.api.gov.uk"`
+	LogLevel  LogLevel `yaml:"logLevel" env:"LOG_LEVEL,default=info"`
+	VesApiKey string   `yaml:"vesApiKey" env:"VES_API_KEY"`
+	Endpoint  string   `yaml:"endpoint" env:"API_ENDPOINT,default=https://driver-vehicle-licensing.api.gov.uk"`
 
 	Interval time.Duration `yaml:"interval" env:"INTERVAL,default=1h"`
 	Port     int           `yaml:"port" env:"PORT,default=9876"`
