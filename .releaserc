@@ -1,6 +1,6 @@
 {
   "branches": ["main"],
-  "repositoryUrl": "https://github.com/henrywhitaker3/adguard-exporter",
+  "repositoryUrl": "https://github.com/henrywhitaker3/dvla-vehicle-exporter",
   "plugins": [
     [
       "@semantic-release/github",
