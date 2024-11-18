@@ -37,7 +37,7 @@ type Config struct {
 	Interval time.Duration `yaml:"interval" env:"INTERVAL,default=1h"`
 	Port     int           `yaml:"port" env:"PORT,default=9876"`
 
-	Vehicles []string `yaml:"vehicles" env:"vehicles"`
+	Vehicles []string `yaml:"vehicles" env:"VEHICLES"`
 }
 
 func Load(path string) (*Config, error) {
