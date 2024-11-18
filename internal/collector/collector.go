@@ -26,7 +26,7 @@ func New(c *dvla.Client, reg string, interval time.Duration) *Collector {
 
 func (c *Collector) CollectVehicleDetails(ctx context.Context) {
 	logger := logger.Logger(ctx)
-	logger.Infow("starting vehicle details collector", "reg", c.reg)
+	logger.Infow("starting vehicle details collector", "reg", c.reg, "interval", c.interval)
 	tick := time.NewTicker(c.interval)
 	defer tick.Stop()
 
@@ -46,11 +46,34 @@ func (c *Collector) CollectVehicleDetails(ctx context.Context) {
 func (c *Collector) collectVehicleDetails(ctx context.Context) {
 	logger := logger.Logger(ctx)
 
+	logger.Debugw("getting vehicle details", "reg", c.reg)
+
 	vehicle, err := c.client.GetVehicle(ctx, c.reg)
 	if err != nil {
-		metrics.VehicleDetailsCollectionErrors.With(prometheus.Labels{"reg": c.reg}).Add(1)
+		metrics.VehicleDetailsCollectionErrors.With(c.vehicleLabels(vehicle)).Add(1)
 		logger.Errorw("failed to collect vehicle details", "error", err)
 		return
 	}
-	logger.Info(vehicle)
+
+	logger.Debugw("got vehicle details", "reg", c.reg, "vehicle", vehicle)
+
+	taxExpiry := time.Until(time.Time(vehicle.TaxDueDate))
+	metrics.TaxExpirySeconds.With(c.vehicleLabels(vehicle)).Set(taxExpiry.Seconds())
+	taxed := 0
+	if vehicle.TaxStatus == "Taxed" {
+		taxed = 1
+	}
+	metrics.TaxStatus.With(c.vehicleLabels(vehicle)).Set(float64(taxed))
+	moted := 0
+	if vehicle.MotStatus == "Valid" {
+		moted = 1
+	}
+	metrics.MotStatus.With(c.vehicleLabels(vehicle)).Set(float64(moted))
+	metrics.YearOfManufacture.With(c.vehicleLabels(vehicle)).Set(float64(vehicle.YearOfManufacture))
+	metrics.CO2Emissions.With(c.vehicleLabels(vehicle)).Set(float64(vehicle.Co2Emissions))
+	metrics.EngineCapactiy.With(c.vehicleLabels(vehicle)).Set(float64(vehicle.EngineCapacity))
+}
+
+func (c *Collector) vehicleLabels(v *dvla.Vehicle) prometheus.Labels {
+	return prometheus.Labels{"reg": c.reg}
 }

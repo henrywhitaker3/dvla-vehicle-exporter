@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/sethvargo/go-envconfig"
@@ -55,5 +56,10 @@ func Load(path string) (*Config, error) {
 	if err := envconfig.Process(context.Background(), conf); err != nil {
 		return nil, fmt.Errorf("failed to process env vars: %w", err)
 	}
+
+	for i, r := range conf.Vehicles {
+		conf.Vehicles[i] = strings.ToUpper(strings.ReplaceAll(r, " ", ""))
+	}
+
 	return conf, nil
 }

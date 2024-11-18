@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 )
 
@@ -31,26 +32,69 @@ func NewClient(opts ClientOptions) *Client {
 	return &Client{opts: opts}
 }
 
+type Date time.Time
+
+func (d *Date) UnmarshalJSON(b []byte) error {
+	s := strings.Trim(string(b), `"`)
+	t, err := time.Parse("2006-01-02", s)
+	if err != nil {
+		return err
+	}
+	*d = Date(t)
+	return nil
+}
+
+func (d *Date) MarshalJSON() ([]byte, error) {
+	if time.Time(*d).IsZero() {
+		return []byte("null"), nil
+	}
+	return []byte(fmt.Sprintf(`"%s"`, time.Time(*d).Format("2006-01-02"))), nil
+}
+
+type DateMonth time.Time
+
+func (d *DateMonth) UnmarshalJSON(b []byte) error {
+	s := strings.Trim(string(b), `"`)
+	if s == "null" {
+		*d = DateMonth{}
+		return nil
+	}
+
+	t, err := time.Parse("2006-01", s)
+	if err != nil {
+		return err
+	}
+	*d = DateMonth(t)
+	return nil
+}
+
+func (d *DateMonth) MarshalJSON() ([]byte, error) {
+	if time.Time(*d).IsZero() {
+		return []byte("null"), nil
+	}
+	return []byte(fmt.Sprintf(`"%s"`, time.Time(*d).Format("2006-01"))), nil
+}
+
 type Vehicle struct {
-	ArtEndDate               time.Time `json:"artEndDate"`
+	ArtEndDate               Date      `json:"artEndDate"`
 	Co2Emissions             int       `json:"co2Emissions"`
 	Colour                   string    `json:"colour"`
 	EngineCapacity           int       `json:"engineCapacity"`
 	FuelType                 string    `json:"fuelType"`
 	Make                     string    `json:"make"`
 	MarkedForExport          bool      `json:"markedForExport"`
-	MonthOfFirstRegistration time.Time `json:"monthOfFirstRegistration"`
+	MonthOfFirstRegistration DateMonth `json:"monthOfFirstRegistration"`
 	MotStatus                string    `json:"motStatus"`
 	RegistrationNumber       string    `json:"registrationNumber"`
 	RevenueWeight            int       `json:"revenueWeight"`
-	TaxDueDate               time.Time `json:"taxDueDate"`
+	TaxDueDate               Date      `json:"taxDueDate"`
 	TaxStatus                string    `json:"taxStatus"`
 	TypeApproval             string    `json:"typeApproval"`
 	Wheelplan                string    `json:"wheelplan"`
 	YearOfManufacture        int       `json:"yearOfManufacture"`
 	EuroStatus               string    `json:"euroStatus"`
 	RealDrivingEmissions     string    `json:"realDrivingEmissions"`
-	DateOfLastV5CIssued      time.Time `json:"dateOfLastV5CIssued"`
+	DateOfLastV5CIssued      Date      `json:"dateOfLastV5CIssued"`
 }
 
 func (c *Client) GetVehicle(ctx context.Context, reg string) (*Vehicle, error) {
