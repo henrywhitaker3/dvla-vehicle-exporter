@@ -20,6 +20,10 @@ var (
 		Name: "dvla_vehicle_details_collection_errors_count",
 		Help: "The number of errors encountered when collecting vehicle data",
 	}, []string{"reg"})
+	VehicleDetails = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Name: "dvla_vehicle_details",
+		Help: "The details of the vehicle",
+	}, []string{"reg", "co2Emissions", "colour", "engineCapacity", "fuelType", "make", "markedForExport", "monthOfFirstRegistration", "revenueWeight", "typeApproval", "wheelPlan", "yearOfManufacture", "euroStatus", "realDrivingEmissions"})
 	TaxExpirySeconds = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "dvla_vehicle_details_tax_expiry_seconds",
 		Help: "The number of seconds until the tax expires",
@@ -27,15 +31,6 @@ var (
 	MotExpirySeconds = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "dvla_vehicle_details_mot_expiry_seconds",
 		Help: "The number of seconds until the tax expires",
-	}, []string{"reg"})
-	CO2Emissions = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "dvla_vehicle_details_co2_emissions",
-	}, []string{"reg"})
-	EngineCapactiy = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "dvla_vehicle_details_engine_capactiy",
-	}, []string{"reg"})
-	YearOfManufacture = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "dvla_vehicle_details_year_of_manufacture",
 	}, []string{"reg"})
 	MotStatus = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "dvla_vehicle_details_tax_status",
@@ -53,10 +48,8 @@ type Metrics struct {
 func New(port int) *Metrics {
 	reg.Do(func() {
 		prometheus.MustRegister(VehicleDetailsCollectionErrors)
+		prometheus.MustRegister(VehicleDetails)
 		prometheus.MustRegister(TaxExpirySeconds)
-		prometheus.MustRegister(CO2Emissions)
-		prometheus.MustRegister(EngineCapactiy)
-		prometheus.MustRegister(YearOfManufacture)
 		prometheus.MustRegister(TaxStatus)
 		prometheus.MustRegister(MotStatus)
 		prometheus.MustRegister(MotExpirySeconds)

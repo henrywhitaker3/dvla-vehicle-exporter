@@ -2,6 +2,7 @@ package collector
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/henrywhitaker3/dvla-vehicle-exporter/internal/logger"
@@ -72,11 +73,29 @@ func (c *Collector) collectVehicleDetails(ctx context.Context) {
 		moted = 1
 	}
 	metrics.MotStatus.With(c.vehicleLabels(vehicle)).Set(float64(moted))
-	metrics.YearOfManufacture.With(c.vehicleLabels(vehicle)).Set(float64(vehicle.YearOfManufacture))
-	metrics.CO2Emissions.With(c.vehicleLabels(vehicle)).Set(float64(vehicle.Co2Emissions))
-	metrics.EngineCapactiy.With(c.vehicleLabels(vehicle)).Set(float64(vehicle.EngineCapacity))
+
+	metrics.VehicleDetails.With(c.detailedLabels(vehicle)).Set(1)
 }
 
 func (c *Collector) vehicleLabels(v *dvla.Vehicle) prometheus.Labels {
 	return prometheus.Labels{"reg": c.reg}
+}
+
+func (c *Collector) detailedLabels(v *dvla.Vehicle) prometheus.Labels {
+	return prometheus.Labels{
+		"reg":                      c.reg,
+		"co2Emissions":             fmt.Sprintf("%d", v.Co2Emissions),
+		"colour":                   v.Colour,
+		"engineCapacity":           fmt.Sprintf("%d", v.EngineCapacity),
+		"fuelType":                 v.FuelType,
+		"make":                     v.Make,
+		"markedForExport":          fmt.Sprintf("%t", v.MarkedForExport),
+		"monthOfFirstRegistration": time.Time(v.MonthOfFirstRegistration).String(),
+		"revenueWeight":            fmt.Sprintf("%d", v.RevenueWeight),
+		"typeApproval":             v.TypeApproval,
+		"wheelPlan":                v.Wheelplan,
+		"yearOfManufacture":        fmt.Sprintf("%d", v.YearOfManufacture),
+		"euroStatus":               v.EuroStatus,
+		"realDrivingEmissions":     v.RealDrivingEmissions,
+	}
 }
