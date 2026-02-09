@@ -10,7 +10,7 @@ require (
 	github.com/sethvargo/go-envconfig v1.3.0
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.11.1
-	go.uber.org/zap v1.27.0
+	go.uber.org/zap v1.27.1
 	sigs.k8s.io/yaml v1.6.0
 )
 
