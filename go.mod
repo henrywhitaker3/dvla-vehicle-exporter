@@ -1,13 +1,13 @@
 module github.com/henrywhitaker3/dvla-vehicle-exporter
 
-go 1.23.3
+go 1.25
 
 require (
 	github.com/henrywhitaker3/ctxgen v1.0.1
 	github.com/labstack/echo-contrib v0.17.4
 	github.com/labstack/echo/v4 v4.13.4
 	github.com/prometheus/client_golang v1.23.0
-	github.com/sethvargo/go-envconfig v1.3.0
+	github.com/sethvargo/go-envconfig v1.4.3
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.11.1
 	go.uber.org/zap v1.27.0
